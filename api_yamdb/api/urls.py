@@ -6,7 +6,7 @@ from api.views import (CategoryViewSet,
                        TitleViewSet)
 
 v1_router = routers.DefaultRouter()
-v1_router = routers.SimpleRouter()
+#v1_router = routers.SimpleRouter()
 v1_router.register(prefix='categories',
                    viewset=CategoryViewSet,
                    basename='categories')

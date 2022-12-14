@@ -22,8 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api.apps.ApiConfig',
-    'reviews.apps.ReviewsConfig',
+    'api',
+    'reviews',
 ]
 
 MIDDLEWARE = [
@@ -112,4 +112,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'reviews.User'
+#AUTH_USER_MODEL = 'reviews.User'
