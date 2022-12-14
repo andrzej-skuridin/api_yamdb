@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title
@@ -8,6 +10,21 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+    def validate(self, data):
+        if len(data['name']) > 256:
+            raise serializers.ValidationError(
+                'Слишком длинное название!'
+            )
+        if len(data['slug']) > 50:
+            raise serializers.ValidationError(
+                'Слишком длинный slug!'
+            )
+        if re.match(pattern='[-a-zA-Z0-9_]+$', string=data['slug']) is None:
+            raise serializers.ValidationError(
+                'В поле slug некорректные данные!'
+            )
+        return data
 
 
 class GenreSerializer(serializers.ModelSerializer):

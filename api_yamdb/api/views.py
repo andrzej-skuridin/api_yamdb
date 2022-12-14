@@ -29,7 +29,7 @@ class CategoryViewSet(ListAddDeleteViewSet):
 class GenreViewSet(ListAddDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = [AdminOrReadOnly]
+    #permission_classes = [AdminOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
@@ -37,7 +37,7 @@ class GenreViewSet(ListAddDeleteViewSet):
 class TitleViewSet(viewsets.GenericViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [AdminOrReadOnly]
+    #permission_classes = [AdminOrReadOnly]
     filter_backends = (filters.BaseFilterBackend,)
     filterset_fields = ('category',
                         'genre',
