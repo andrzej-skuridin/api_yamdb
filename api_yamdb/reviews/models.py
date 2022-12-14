@@ -2,10 +2,14 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             verbose_name='Категория',
                             unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True,
+                            max_length=50)
+
+    def __str__(self):
+        return self.name  # slug??
 
 
 class Genre(models.Model):
@@ -14,13 +18,17 @@ class Genre(models.Model):
                             unique=True)
     slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.name  # slug??
+
 
 class Title(models.Model):
     name = models.CharField(max_length=200,
                             verbose_name='Название',
                             unique=True)
-    year = models.DateTimeField(blank=True,
-                                null=True)
+    year = models.IntegerField(blank=True,
+                               null=True,
+                               verbose_name='Год выпуска')
 
     # TBA by another contributor (field type: ForeignKey)
     # ---------------------------------------------------
@@ -30,19 +38,18 @@ class Title(models.Model):
 
     description = models.CharField(max_length=200,
                                    verbose_name='Описание')
-    genre = models.ForeignKey(
+    genre = models.ManyToManyField(
         Genre,
-        on_delete=models.SET_NULL,
+        #on_delete=models.SET_NULL,
         related_name='titles',
-        blank=True,
-        null=True,
         verbose_name='Жанр'
     )
     category = models.ForeignKey(
         Category,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='titles',
-        blank=True,
-        null=True,
-        verbose_name='Категория'
+        verbose_name='Категория',
     )
+
+    def __str__(self):
+        return self.name
