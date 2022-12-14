@@ -6,9 +6,16 @@ from api.views import (CategoryViewSet,
                        TitleViewSet)
 
 v1_router = routers.DefaultRouter()
-v1_router.register('categories', CategoryViewSet)
-v1_router.register('genres', GenreViewSet)
-v1_router.register('titles', TitleViewSet)
+v1_router = routers.SimpleRouter()
+v1_router.register(prefix='categories',
+                   viewset=CategoryViewSet,
+                   basename='categories')
+v1_router.register(prefix='genres',
+                   viewset=GenreViewSet,
+                   basename='genres')
+v1_router.register(prefix='titles',
+                   viewset=TitleViewSet,
+                   basename='titles')
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
