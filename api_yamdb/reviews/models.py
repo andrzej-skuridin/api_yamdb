@@ -50,13 +50,15 @@ class Title(models.Model):
         # этот параметр похоже не предусмотрен
         #on_delete=models.SET_NULL,
         related_name='titles',
-        verbose_name='Жанр'
+        verbose_name='Жанр',
+        null=True
     )
     category = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='titles',
         verbose_name='Категория',
+        null=True
     )
 
     def __str__(self):

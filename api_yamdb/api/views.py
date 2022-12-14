@@ -42,4 +42,5 @@ class TitleViewSet(viewsets.GenericViewSet):
     filterset_fields = ('category',
                         'genre',
                         'name',
-                        'year')
+                        'year'
+                        )
