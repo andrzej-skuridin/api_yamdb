@@ -1,5 +1,32 @@
 from django.core.validators import MaxLengthValidator, validate_slug
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+
+CHOICES = (
+    ('user', 'пользователь'),
+    ('moderator', 'модератор'),
+    ('admin', 'администратор'),
+)
+
+
+class User(AbstractUser):
+    email = models.EmailField(
+        'email',
+        unique=True,
+        max_length=254,
+    )
+
+    first_name = models.CharField(
+        max_length=150,
+        blank=True,
+    )
+
+    role = models.CharField(
+        max_length=9,
+        choices=CHOICES,
+        default='user',
+    )
 
 
 class Category(models.Model):
