@@ -6,37 +6,56 @@ from reviews.models import Category, Genre, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
         fields = '__all__'
 
-    def validate(self, data):
-        if len(data['name']) > 256:
+    def validate_name(self, value):
+        if len(value) > 256:
             raise serializers.ValidationError(
                 'Слишком длинное название!'
             )
-        if len(data['slug']) > 50:
+        return value
+
+    def validate_slug(self, value):
+        if len(value) > 50:
             raise serializers.ValidationError(
                 'Слишком длинный slug!'
             )
-        if re.match(pattern='[-a-zA-Z0-9_]+$', string=data['slug']) is None:
+        if re.match(pattern='[-a-zA-Z0-9_]+$', string=value) is None:
             raise serializers.ValidationError(
                 'В поле slug некорректные данные!'
             )
-        return data
+        return value
 
 
 class GenreSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Genre
         fields = '__all__'
 
+    def validate_name(self, value):
+        if len(value) > 256:
+            raise serializers.ValidationError(
+                'Слишком длинное название!'
+            )
+        return value
+
+    def validate_slug(self, value):
+        if len(value) > 50:
+            raise serializers.ValidationError(
+                'Слишком длинный slug!'
+            )
+        if re.match(pattern='[-a-zA-Z0-9_]+$', string=value) is None:
+            raise serializers.ValidationError(
+                'В поле slug некорректные данные!'
+            )
+        return value
+
 
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, required=True)
-    #genre = serializers.SlugRelatedField(required=True,
+    # genre = serializers.SlugRelatedField(required=True,
     #                                     many=True,
     #                                     slug_field='slug',
     #                                     queryset=Genre.objects.all()
@@ -49,3 +68,10 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+    def validate_name(self, value):
+        if len(value) > 256:
+            raise serializers.ValidationError(
+                'Слишком длинное название!'
+            )
+        return value

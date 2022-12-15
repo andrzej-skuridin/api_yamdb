@@ -23,11 +23,11 @@ from api.views import (CategoryViewSet,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/titles/', TitleViewSet),  # костыль, проблему решает
-    path('api/v1/genres/', GenreViewSet),  # костыль, проблему решает
-    path('api/v1/categories/', CategoryViewSet),  # костыль, проблему решает
+    # path('api/v1/titles/', TitleViewSet),  # костыль, проблему решает
+    # path('api/v1/genres/', GenreViewSet),  # костыль, проблему решает
+    # path('api/v1/categories/', CategoryViewSet),  # костыль, проблему решает
 
-    #path('api/', include('api.urls')),
+    path('api/', include('api.urls')),
     path(
         'redoc/',
         TemplateView.as_view(template_name='redoc.html'),

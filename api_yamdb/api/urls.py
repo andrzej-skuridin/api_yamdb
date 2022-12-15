@@ -6,16 +6,16 @@ from api.views import (CategoryViewSet,
                        TitleViewSet)
 
 v1_router = routers.DefaultRouter()
-v1_router = routers.SimpleRouter()
-v1_router.register(prefix='categories',
-                   viewset=CategoryViewSet,
-                   basename='categories')
-v1_router.register(prefix='genres',
-                   viewset=GenreViewSet,
-                   basename='genres')
 v1_router.register(prefix='titles',
-                   viewset=TitleViewSet,
-                   basename='titles')
+                   basename='title',
+                   viewset=TitleViewSet)
+v1_router.register(prefix='categories',
+                   basename='categories',
+                   viewset=CategoryViewSet)
+v1_router.register(prefix='genres',
+                   basename='genres',
+                   viewset=GenreViewSet)
+
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
