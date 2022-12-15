@@ -3,13 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxLengthValidator, validate_slug
 
 
-CHOICES = (
-    ('user', 'пользователь'),
-    ('moderator', 'модератор'),
-    ('admin', 'администратор'),
-)
-
-
 class User(AbstractUser):
     USER = 'user'
     ADMIN = 'admin'
