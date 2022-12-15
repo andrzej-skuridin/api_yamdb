@@ -1,43 +1,35 @@
 from rest_framework import (filters,
                             mixins,
                             viewsets)
-from rest_framework.decorators import action
-from rest_framework.response import Response
 
-from .permissions import AdminOrReadOnly, IsAdminOrSuperUser
+from .permissions import AdminOrReadOnly
 
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
-                             TitleSerializer)
+                             TitleSerializer,
+                             UserSerializer)
 
-from reviews.models import Category, Genre, Title, User
+from reviews.models import Category, Genre, Title
 
 
+# Система подтверждения через e-mail
+def send_confirmation_code(request):
+    serializer = UserSerializer(data=request.data)
+    pass
+
+
+# Работа с токеном
+def token_access(request):
+    pass
+
+
+# Работа с юзерами
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('pk')
     serializer_class = UserSerializer
-    permission_classes = (IsAdminOrSuperUser,)
-    lookup_field = 'username'
-    filter_backends = (SearchFilter,)
-    search_fields = ('=username',)
+    pass
 
-    @action(
-        methods=["get", "patch"],
-        detail=False,
-        permission_classes=(IsAuthenticated,),
-    )
-    def me(self, request, pk=None):
-        if request.method == "GET":
-            serializer = UserSerializer(request.user)
-            return Response(serializer.data)
-        serializer = UserSerializer(
-            request.user,
-            data=request.data,
-            partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(role=request.user.role)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def me(self):
+        pass
 
 
 # От этого вьюсета надо наследовать вьюсеты для категорий и жанров
@@ -59,7 +51,7 @@ class CategoryViewSet(ListAddDeleteViewSet):
 class GenreViewSet(ListAddDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    #permission_classes = [AdminOrReadOnly]
+    # permission_classes = [AdminOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
@@ -67,7 +59,7 @@ class GenreViewSet(ListAddDeleteViewSet):
 class TitleViewSet(viewsets.GenericViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    #permission_classes = [AdminOrReadOnly]
+    # permission_classes = [AdminOrReadOnly]
     filter_backends = (filters.BaseFilterBackend,)
     filterset_fields = ('category',
                         'genre',
