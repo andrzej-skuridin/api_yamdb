@@ -1,6 +1,7 @@
 from rest_framework import (filters,
                             mixins,
                             viewsets)
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
@@ -61,11 +62,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
-
-    # Titles пока не трогать
-    # filter_backends = (filters.BaseFilterBackend,)
-    # filterset_fields = ('category',
-    #                     'genre',
-    #                     'name',
-    #                     'year'
-    #                     )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category',
+                        'genre',
+                        'name',
+                        'year'
+                        )
