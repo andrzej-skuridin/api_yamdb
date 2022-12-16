@@ -11,7 +11,6 @@ v1_router = routers.DefaultRouter()
 v1_router.register(prefix='titles',
                    basename='title',
                    viewset=TitleViewSet)
-
 v1_router.register(prefix='categories',
                    basename='categories',
                    viewset=CategoryViewSet)

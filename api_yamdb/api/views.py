@@ -1,8 +1,9 @@
 from rest_framework import (filters,
                             mixins,
                             viewsets)
+from rest_framework.pagination import PageNumberPagination
 
-from .permissions import AdminOrReadOnly
+from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
@@ -43,24 +44,29 @@ class ListAddDeleteViewSet(mixins.ListModelMixin,
 class CategoryViewSet(ListAddDeleteViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    # permission_classes = [AdminOrReadOnly]
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ('name',)
+    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    # пагинация не проходит тест
+    pagination_class = PageNumberPagination
 
 
 class GenreViewSet(ListAddDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    # permission_classes = [AdminOrReadOnly]
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ('name',)
-
+    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    # пагинация не проходит тест
+    pagination_class = PageNumberPagination
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    # permission_classes = [AdminOrReadOnly]
+    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+
+    # Titles пока не трогать
     # filter_backends = (filters.BaseFilterBackend,)
     # filterset_fields = ('category',
     #                     'genre',
