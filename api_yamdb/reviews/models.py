@@ -114,5 +114,5 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, db_column='genre_id', on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, db_column='title_id', on_delete=models.CASCADE)
