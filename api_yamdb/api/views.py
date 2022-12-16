@@ -47,8 +47,6 @@ class CategoryViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
-    pagination_class = PageNumberPagination
 
 
 class GenreViewSet(ListAddDeleteViewSet):
@@ -57,8 +55,6 @@ class GenreViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
-    pagination_class = PageNumberPagination
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -73,4 +69,3 @@ class TitleViewSet(viewsets.ModelViewSet):
     #                     'name',
     #                     'year'
     #                     )
-
