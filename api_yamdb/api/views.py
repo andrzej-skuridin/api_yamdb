@@ -43,26 +43,28 @@ class ListAddDeleteViewSet(mixins.ListModelMixin,
 class CategoryViewSet(ListAddDeleteViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [AdminOrReadOnly]
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    # permission_classes = [AdminOrReadOnly]
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('name',)
 
 
 class GenreViewSet(ListAddDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     # permission_classes = [AdminOrReadOnly]
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('name',)
 
 
-class TitleViewSet(viewsets.GenericViewSet):
+
+class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     # permission_classes = [AdminOrReadOnly]
-    filter_backends = (filters.BaseFilterBackend,)
-    filterset_fields = ('category',
-                        'genre',
-                        'name',
-                        'year'
-                        )
+    # filter_backends = (filters.BaseFilterBackend,)
+    # filterset_fields = ('category',
+    #                     'genre',
+    #                     'name',
+    #                     'year'
+    #                     )
+

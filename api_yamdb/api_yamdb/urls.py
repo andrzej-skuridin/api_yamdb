@@ -17,8 +17,16 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from api.views import (CategoryViewSet,
+                       GenreViewSet,
+                       TitleViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('api/v1/titles/', TitleViewSet),  # костыль, проблему решает
+    # path('api/v1/genres/', GenreViewSet),  # костыль, проблему решает
+    # path('api/v1/categories/', CategoryViewSet),  # костыль, проблему решает
+
     path('api/', include('api.urls')),
     path(
         'redoc/',
