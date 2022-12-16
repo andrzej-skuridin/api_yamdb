@@ -5,6 +5,14 @@ from rest_framework import serializers
 from reviews.models import Category, Genre, Title
 
 
+class UserSerializer(serializers.ModelSerializer):
+    pass
+
+
+class TokenAccessSerializer(serializers.Serializer):
+    pass
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
