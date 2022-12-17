@@ -1,4 +1,5 @@
 import re
+import datetime as dt
 
 from rest_framework import serializers
 
@@ -40,3 +41,9 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+    def validate_year(self, value):
+        year_now = dt.date.today().year
+        if not (value < year_now):
+            raise serializers.ValidationError('Проверьте год публикации/выхода!')
+        return value

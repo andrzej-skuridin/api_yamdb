@@ -113,7 +113,7 @@ class Title(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return f'{self.name} {self.slug}'
+        return f'{self.name}'
 
 
 class GenreTitle(models.Model):
