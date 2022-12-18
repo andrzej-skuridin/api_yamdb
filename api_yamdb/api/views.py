@@ -19,9 +19,9 @@ from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
                              TitleSerializer,
-                             TitlePostPatchSerializer,
+    # TitlePostPatchSerializer,
                              UserSerializer,
-                             TokenAccessSerializer)
+                             TokenAccessSerializer, OverrideTitleSerializer)
 
 from reviews.models import Category, Genre, Title, User
 
@@ -119,12 +119,11 @@ class GenreViewSet(ListAddDeleteViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
 
-    # Original code:
-    serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    # serializer_class = TitleSerializer
+    serializer_class = OverrideTitleSerializer
 
-    # serializer_class = TitlePostPatchSerializer
-    # permission_classes = [AllowAny]
+    # permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    permission_classes = [AllowAny]
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',
