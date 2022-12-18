@@ -120,11 +120,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
 
     # Original code:
-    # serializer_class = TitleSerializer
-    # permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    serializer_class = TitleSerializer
+    permission_classes = [IsAdminOrSuperUserOrReadOnly]
 
-    serializer_class = TitlePostPatchSerializer
-    permission_classes = [AllowAny]
+    # serializer_class = TitlePostPatchSerializer
+    # permission_classes = [AllowAny]
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',
