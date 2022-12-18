@@ -1,4 +1,5 @@
 import re
+import datetime as dt
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
@@ -33,71 +34,33 @@ class TokenAccessSerializer(serializers.Serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
-
-    def validate_name(self, value):
-        if len(value) > 256:
-            raise serializers.ValidationError(
-                'Слишком длинное название!'
-            )
-        return value
-
-    def validate_slug(self, value):
-        if len(value) > 50:
-            raise serializers.ValidationError(
-                'Слишком длинный slug!'
-            )
-        if re.match(pattern='[-a-zA-Z0-9_]+$', string=value) is None:
-            raise serializers.ValidationError(
-                'В поле slug некорректные данные!'
-            )
-        return value
+        exclude = ('id',)
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
-
-    def validate_name(self, value):
-        if len(value) > 256:
-            raise serializers.ValidationError(
-                'Слишком длинное название!'
-            )
-        return value
-
-    def validate_slug(self, value):
-        if len(value) > 50:
-            raise serializers.ValidationError(
-                'Слишком длинный slug!'
-            )
-        if re.match(pattern='[-a-zA-Z0-9_]+$', string=value) is None:
-            raise serializers.ValidationError(
-                'В поле slug некорректные данные!'
-            )
-        return value
+        exclude = ('id',)
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    # genre = GenreSerializer(many=True, required=True)
-    genre = serializers.SlugRelatedField(required=True,
-                                        many=True,
-                                        slug_field='slug',
-                                        queryset=Genre.objects.all()
-                                        )
-    # category = CategorySerializer(required=True)
-    category = serializers.SlugRelatedField(required=True,
-                                            slug_field='slug',
-                                            queryset=Category.objects.all()
-                                            )
+    genre = GenreSerializer(many=True, required=False)
+    category = CategorySerializer(many=False, required=True)
 
     class Meta:
         model = Title
         fields = '__all__'
 
-    def validate_name(self, value):
-        if len(value) > 256:
-            raise serializers.ValidationError(
-                'Слишком длинное название!'
-            )
+    def validate_year(self, value):
+        year_now = dt.date.today().year
+        if not (value < (year_now + 1)):
+            raise serializers.ValidationError('Проверьте год публикации/выхода!')
         return value

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (filters,
                             mixins,
                             viewsets,
@@ -12,6 +13,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+
 
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 
@@ -89,7 +91,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# От этого вьюсета надо наследовать вьюсеты для категорий и жанров
 class ListAddDeleteViewSet(mixins.ListModelMixin,
                            mixins.DestroyModelMixin,
                            mixins.CreateModelMixin,
@@ -103,8 +104,7 @@ class CategoryViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
-    pagination_class = PageNumberPagination
+    lookup_field = 'slug'
 
 
 class GenreViewSet(ListAddDeleteViewSet):
@@ -113,20 +113,16 @@ class GenreViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
-    pagination_class = PageNumberPagination
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
-
-    # Titles пока не трогать
-    # filter_backends = (filters.BaseFilterBackend,)
-    # filterset_fields = ('category',
-    #                     'genre',
-    #                     'name',
-    #                     'year'
-    #                     )
-
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category',
+                        'genre',
+                        'name',
+                        'year'
+                        )

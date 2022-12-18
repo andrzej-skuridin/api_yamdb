@@ -20,7 +20,6 @@ v1_router.register(prefix='genres',
                    basename='genres',
                    viewset=GenreViewSet)
 
-
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
     path('v1/auth/token/', token_access, name='token'),

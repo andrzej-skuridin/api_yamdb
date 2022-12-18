@@ -47,8 +47,12 @@ class Category(models.Model):
                                         ]
                             )
 
+    class Meta:
+        verbose_name = 'Категория'
+        ordering = ['-id']
+
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class Genre(models.Model):
@@ -64,8 +68,13 @@ class Genre(models.Model):
                                         ]
                             )
 
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+        ordering = ['-id']
+
     def __str__(self):
-        return self.name  # slug??
+        return f'{self.name}'
 
 
 class Title(models.Model):
@@ -88,19 +97,31 @@ class Title(models.Model):
                                    verbose_name='Описание')
     genre = models.ManyToManyField(
         Genre,
-        # этот параметр похоже не предусмотрен
-        # null=True
-        #on_delete=models.SET_NULL,
-        related_name='titles',
-        verbose_name='Жанр',
+        through='GenreTitle',
+        blank=True
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         related_name='titles',
-        verbose_name='Категория',
         null=True
     )
 
+    class Meta:
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
+        ordering = ['-id']
+
     def __str__(self):
-        return self.name
+        return f'{self.name}'
+
+
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(Genre,
+                              db_column='genre_id',
+                              on_delete=models.CASCADE
+                              )
+    title = models.ForeignKey(Title,
+                              db_column='title_id',
+                              on_delete=models.CASCADE
+                              )
