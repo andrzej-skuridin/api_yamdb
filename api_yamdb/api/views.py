@@ -1,8 +1,9 @@
 from rest_framework import (filters,
                             mixins,
-                            viewsets)
+                            viewsets, status)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 
@@ -48,6 +49,8 @@ class CategoryViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
+
 
 
 class GenreViewSet(ListAddDeleteViewSet):
@@ -56,6 +59,7 @@ class GenreViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
