@@ -19,6 +19,7 @@ from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
                              TitleSerializer,
+                             TitlePostPatchSerializer,
                              UserSerializer,
                              TokenAccessSerializer)
 
@@ -117,11 +118,26 @@ class GenreViewSet(ListAddDeleteViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+
+    # Original code:
+    # serializer_class = TitleSerializer
+    # permission_classes = [IsAdminOrSuperUserOrReadOnly]
+
+    serializer_class = TitlePostPatchSerializer
+    permission_classes = [AllowAny]
+
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',
                         'genre',
                         'name',
                         'year'
                         )
+
+    # def get_serializer_class(self):
+    #     # Если запрошенное действие (action) — получение списка объектов ('list')
+    #     actions = ('retrieve',
+    #                'update',
+    #                'partial_update')
+    #     if self.action in actions:
+    #         return TitlePostPatchSerializer
+    #     return TitleSerializer
