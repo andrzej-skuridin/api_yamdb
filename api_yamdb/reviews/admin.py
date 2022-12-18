@@ -30,12 +30,6 @@ class TitleResource(resources.ModelResource):
                   )
 
 
-class GenreTitleResource(resources.ModelResource):
-    class Meta:
-        model = GenreTitle
-        fields = ('genre_id', 'title_id')
-
-
 @admin.register(Title)
 class TitleAdmin(ImportExportModelAdmin):
     resource_classes = (TitleResource,)
@@ -45,7 +39,22 @@ class TitleAdmin(ImportExportModelAdmin):
                     'description',
                     'category'
                     )
-    # exclude = ('id',)
+
+
+class GenreTitleResource(resources.ModelResource):
+    class Meta:
+        model = GenreTitle
+        fields = ('id',
+                  'genre_id',
+                  'title_id')
+
+
+@admin.register(GenreTitle)
+class GenreTitleAdmin(ImportExportModelAdmin):
+    resource_classes = (GenreTitleResource,)
+    list_display = ('genre_id',
+                    'title_id'
+                    )
 
 
 class CategoryResource(resources.ModelResource):

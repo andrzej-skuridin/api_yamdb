@@ -41,10 +41,12 @@ class TitleSerializer(serializers.ModelSerializer):
     #                                      slug_field='slug',
     #                                      queryset=Genre.objects.all()
     #                                      )
-    category = serializers.SlugRelatedField(required=True,
-                                            slug_field='slug',
-                                            queryset=Category.objects.all()
-                                            )
+    category = CategorySerializer(many=False, required=True)
+    # category = serializers.SlugRelatedField(required=True,
+    #                                         slug_field='slug',
+    #                                         queryset=Category.objects.all()
+    #                                         )
+
 
     class Meta:
         model = Title
