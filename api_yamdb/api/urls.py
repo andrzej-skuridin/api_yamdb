@@ -5,9 +5,11 @@ from api.views import (CategoryViewSet,
                        GenreViewSet,
                        TitleViewSet,
                        token_access,
-                       send_confirmation_code)
+                       send_confirmation_code,
+                       UserViewSet)
 
 v1_router = routers.DefaultRouter()
+v1_router.register('users', UserViewSet)
 v1_router.register(prefix='titles',
                    basename='title',
                    viewset=TitleViewSet)

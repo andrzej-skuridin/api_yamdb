@@ -132,3 +132,8 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'reviews.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+EMAIL_HOST_USER = 'example@example.ru'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
