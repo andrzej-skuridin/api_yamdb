@@ -6,9 +6,11 @@ from api.views import (CategoryViewSet,
                        TitleViewSet,
                        ReviewViewSet,
                        token_access,
-                       send_confirmation_code)
+                       send_confirmation_code,
+                       UserViewSet)
 
 v1_router = routers.DefaultRouter()
+v1_router.register('users', UserViewSet)
 v1_router.register(prefix='titles',
                    basename='title',
                    viewset=TitleViewSet)
@@ -22,6 +24,7 @@ v1_router.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
     basename='reviews')
+
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
