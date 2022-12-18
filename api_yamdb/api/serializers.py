@@ -17,7 +17,6 @@ class TokenAccessSerializer(serializers.Serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        # fields = '__all__'
         exclude = ('id',)
         lookup_field = 'slug'
         extra_kwargs = {
@@ -28,7 +27,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        # fields = '__all__'
         exclude = ('id',)
         lookup_field = 'slug'
         extra_kwargs = {
@@ -38,17 +36,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, required=False)
-    # genre = serializers.SlugRelatedField(required=True,
-    #                                      many=True,
-    #                                      slug_field='slug',
-    #                                      queryset=Genre.objects.all()
-    #                                      )
     category = CategorySerializer(many=False, required=True)
-    # category = serializers.SlugRelatedField(required=True,
-    #                                         slug_field='slug',
-    #                                         queryset=Category.objects.all()
-    #                                         )
-
 
     class Meta:
         model = Title
@@ -56,6 +44,6 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def validate_year(self, value):
         year_now = dt.date.today().year
-        if not (value < year_now):
+        if not (value < (year_now + 1)):
             raise serializers.ValidationError('Проверьте год публикации/выхода!')
         return value

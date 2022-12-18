@@ -35,7 +35,6 @@ class UserViewSet(viewsets.ModelViewSet):
         pass
 
 
-# От этого вьюсета надо наследовать вьюсеты для категорий и жанров
 class ListAddDeleteViewSet(mixins.ListModelMixin,
                            mixins.DestroyModelMixin,
                            mixins.CreateModelMixin,
@@ -50,7 +49,6 @@ class CategoryViewSet(ListAddDeleteViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-
 
 
 class GenreViewSet(ListAddDeleteViewSet):
