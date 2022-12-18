@@ -1,16 +1,33 @@
 import re
 
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role',
+        )
+        model = User
+
+    def validate_username(self, value):
+        if value == 'me':
+            raise ValidationError(
+                'Нельзя использовать зарезвированное имя "me".')
+        return value
 
 
 class TokenAccessSerializer(serializers.Serializer):
-    pass
+    username = serializers.CharField(required=True)
+    confirmation_code = serializers.CharField(required=True)
 
 
 class CategorySerializer(serializers.ModelSerializer):
