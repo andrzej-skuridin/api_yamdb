@@ -1,8 +1,8 @@
 import re
-
+from django.db.models import Avg
 from rest_framework import serializers
-
-from reviews.models import Category, Genre, Title
+from rest_framework.validators import UniqueTogetherValidator
+from reviews.models import Category, Genre, Title, Review
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -62,17 +62,16 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    # genre = GenreSerializer(many=True, required=True)
     genre = serializers.SlugRelatedField(required=True,
                                         many=True,
                                         slug_field='slug',
                                         queryset=Genre.objects.all()
                                         )
-    # category = CategorySerializer(required=True)
     category = serializers.SlugRelatedField(required=True,
                                             slug_field='slug',
                                             queryset=Category.objects.all()
                                             )
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
@@ -84,3 +83,19 @@ class TitleSerializer(serializers.ModelSerializer):
                 'Слишком длинное название!'
             )
         return value
+
+    def get_rating(self, obj):
+        return obj.reviews.all().aggregate(Avg('score'))['score__avg']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'author', 'title', 'text', 'score', 'pub_date')
+        read_only_fields = ('author', 'title', 'pub_date', 'id')
