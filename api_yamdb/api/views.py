@@ -18,10 +18,12 @@ from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
-                             TitleSerializer,
-    # TitlePostPatchSerializer,
+                             TitleListSerializer,
+                             TitleRetrieveSerializer,
+                             TitlePostPatchSerializer,
                              UserSerializer,
-                             TokenAccessSerializer, OverrideTitleSerializer)
+                             TokenAccessSerializer,
+                             )
 
 from reviews.models import Category, Genre, Title, User
 
@@ -119,24 +121,20 @@ class GenreViewSet(ListAddDeleteViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
 
-    # serializer_class = TitleSerializer
-    serializer_class = OverrideTitleSerializer
-
-    # permission_classes = [IsAdminOrSuperUserOrReadOnly]
-    permission_classes = [AllowAny]
+    # Для прохождения теста не забыть поменять!!!
+    permission_classes = [IsAdminOrSuperUserOrReadOnly]
+    # permission_classes = [AllowAny]
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',
-                        'genre',
+                        'genre__slug',
                         'name',
                         'year'
                         )
 
-    # def get_serializer_class(self):
-    #     # Если запрошенное действие (action) — получение списка объектов ('list')
-    #     actions = ('retrieve',
-    #                'update',
-    #                'partial_update')
-    #     if self.action in actions:
-    #         return TitlePostPatchSerializer
-    #     return TitleSerializer
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return TitleListSerializer
+        if self.action == 'retrieve':
+            return TitleRetrieveSerializer
+        return TitlePostPatchSerializer

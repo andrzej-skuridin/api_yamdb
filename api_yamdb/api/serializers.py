@@ -1,9 +1,8 @@
-import datetime as dt
-
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
-from reviews.models import Category, Genre, Title, User, GenreTitle
+from reviews.models import Category, Genre, Title, User
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -50,7 +49,7 @@ class GenreSerializer(serializers.ModelSerializer):
         }
 
 
-class TitleSerializer(serializers.ModelSerializer):
+class TitleListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, required=False)
     category = CategorySerializer(many=False, required=True)
 
@@ -59,42 +58,27 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OverrideTitleSerializer(serializers.ModelSerializer):
-    # https://practicum.yandex.ru/learn/backend-developer/courses/8a4693f6-fa0e-4ab0-babd-a13453ad99c0/sprints/73398/topics/eb215b6a-1a94-46e8-b1ed-6f4da1956b01/lessons/062f1640-6723-4c8b-95aa-50c620474275/
-    # Операции записи с вложенными сериализаторами
-
-    genre = serializers.SlugRelatedField(
-        many=True,
-        slug_field='genre__slug',
-        queryset=Title.objects.all()
-    )
-    category = serializers.SlugRelatedField(
-        many=False,
-        slug_field='category__slug',
-        queryset=Title.objects.all()
-    )
+class TitleRetrieveSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True, required=False)
+    category = CategorySerializer(many=False, required=True)
+    pagination_class = None
 
     class Meta:
         model = Title
-        fields = ('name',
-                  'year',
-                  'description',
-                  'genre',
-                  'category'
-                  )
+        fields = '__all__'
 
-    def validate_year(self, value):
-        year_now = dt.date.today().year
-        if not (value < (year_now + 1)):
-            raise serializers.ValidationError('Проверьте год публикации/выхода!')
-        return value
 
-    def create(self, validated_data):
-        genre = validated_data.pop('genre')
-        title = Title.objects.create(**validated_data)
-        for g in genre:
-            current_g, status = Genre.objects.get_or_create(
-                **g)
-            GenreTitle.objects.create(
-                g=current_g, title=title)
-        return title
+class TitlePostPatchSerializer(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(required=True,
+                                         many=True,
+                                         slug_field='slug',
+                                         queryset=Genre.objects.all()
+                                         )
+    category = serializers.SlugRelatedField(required=True,
+                                            slug_field='slug',
+                                            queryset=Category.objects.all()
+                                            )
+
+    class Meta:
+        model = Title
+        fields = '__all__'
