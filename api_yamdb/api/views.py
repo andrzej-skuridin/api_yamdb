@@ -2,7 +2,7 @@ from rest_framework import (filters,
                             mixins,
                             viewsets, status)
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.response import Response
 
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly

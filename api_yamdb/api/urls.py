@@ -11,27 +11,12 @@ v1_router = routers.DefaultRouter()
 v1_router.register(prefix='titles',
                    basename='title',
                    viewset=TitleViewSet)
-
-# v1_router.register(prefix='categories',
-#                    basename='categories',
-#                    viewset=CategoryViewSet)
-
-# ------
-v1_router.register(
-    r'categories/<slug:category_slug>/',
-    basename='categories',
-    viewset=CategoryViewSet
-)
-v1_router.register(
-    r'categories',
-    basename='categories',
-    viewset=CategoryViewSet
-)
-# ------
+v1_router.register(prefix='categories',
+                   basename='categories',
+                   viewset=CategoryViewSet)
 v1_router.register(prefix='genres',
                    basename='genres',
                    viewset=GenreViewSet)
-
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),

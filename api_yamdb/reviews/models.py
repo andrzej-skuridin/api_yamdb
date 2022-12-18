@@ -52,7 +52,7 @@ class Category(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return f'{self.name} {self.slug}'
+        return f'{self.name}'
 
 
 class Genre(models.Model):
@@ -74,7 +74,7 @@ class Genre(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        return f'{self.name} {self.slug}'
+        return f'{self.name}'
 
 
 class Title(models.Model):
