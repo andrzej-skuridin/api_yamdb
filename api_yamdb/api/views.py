@@ -130,27 +130,6 @@ class TitleViewSet(viewsets.ModelViewSet):
                         )
     filterset_class = TitleFilter
 
-    def get_queryset(self):
-        queryset = Title.objects.all()
-        slug = self.request.query_params.get('slug')
-        # if slug is not None:
-        #     queryset = queryset.filter(genre__slug=slug)
-        # return queryset
-        if slug is not None:
-            slug = self.request.query_params.get('slug')
-            # берём из жанров только те, у которых соответсвующий слаг
-            querysetG = Genre.objects.filter(slug=slug).values('id')
-            # вытаскиваем список id результатов фильтрации (столбик) <<<<<<<<<<<<< реализовано неверно
-            g_id = querysetG['id']
-            # в промежуточной таблице берём только те строки, в которых id жанра соответсвует прошлому шагу
-            querysetGT = GenreTitle.objects.filter(genre_id__in=g_id).values()
-            # из этих строк забираем id татлов (столбик) <<<<<<<<<<<<< реализовано неверно
-            t_id = querysetGT['title_id']
-            # фильтруем titles по id тайтлов
-            new_queryset = queryset.filter(genre__title_id__in=t_id)
-            return new_queryset
-        return queryset
-
     def get_serializer_class(self):
         if self.action == 'list':
             return TitleListSerializer
