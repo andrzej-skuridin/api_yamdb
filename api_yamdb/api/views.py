@@ -4,6 +4,7 @@ from rest_framework import (filters,
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from .permissions import PermissionReviewComment, IsAdminOrSuperUserOrReadOnly
+from rest_framework.permissions import AllowAny
 from rest_framework import serializers
 
 from api.serializers import (CategorySerializer,
@@ -66,15 +67,7 @@ class GenreViewSet(ListAddDeleteViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrSuperUserOrReadOnly]
-
-    # Titles пока не трогать
-    # filter_backends = (filters.BaseFilterBackend,)
-    # filterset_fields = ('category',
-    #                     'genre',
-    #                     'name',
-    #                     'year'
-    #                     )
+    permission_classes = [AllowAny]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -94,6 +87,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
             author=self.request.user)
         if len(queryset) > 0:
             raise serializers.ValidationError(
-                'Нельзя два раза комментировать один пост!'
+                'Нельзя два раза писать отзыв на одно произведение!'
             )
         serializer.save(author=self.request.user, title=title)
