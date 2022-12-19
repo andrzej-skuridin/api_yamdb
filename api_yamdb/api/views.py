@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (filters,
@@ -13,7 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
+from .filters import TitleFilter
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
 
 from api.serializers import (CategorySerializer,
@@ -25,7 +26,7 @@ from api.serializers import (CategorySerializer,
                              TokenAccessSerializer,
                              )
 
-from reviews.models import Category, Genre, Title, User
+from reviews.models import Category, Genre, GenreTitle, Title, User
 
 
 # Система подтверждения через e-mail
@@ -120,17 +121,35 @@ class GenreViewSet(ListAddDeleteViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-
-    # Для прохождения теста не забыть поменять!!!
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
-    # permission_classes = [AllowAny]
-
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',
-                        'genre__slug',
                         'name',
-                        'year'
+                        'year',
+                        'genre'
                         )
+    filterset_class = TitleFilter
+
+    def get_queryset(self):
+        queryset = Title.objects.all()
+        slug = self.request.query_params.get('slug')
+        # if slug is not None:
+        #     queryset = queryset.filter(genre__slug=slug)
+        # return queryset
+        if slug is not None:
+            slug = self.request.query_params.get('slug')
+            # берём из жанров только те, у которых соответсвующий слаг
+            querysetG = Genre.objects.filter(slug=slug).values('id')
+            # вытаскиваем список id результатов фильтрации (столбик) <<<<<<<<<<<<< реализовано неверно
+            g_id = querysetG['id']
+            # в промежуточной таблице берём только те строки, в которых id жанра соответсвует прошлому шагу
+            querysetGT = GenreTitle.objects.filter(genre_id__in=g_id).values()
+            # из этих строк забираем id татлов (столбик) <<<<<<<<<<<<< реализовано неверно
+            t_id = querysetGT['title_id']
+            # фильтруем titles по id тайтлов
+            new_queryset = queryset.filter(genre__title_id__in=t_id)
+            return new_queryset
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'list':

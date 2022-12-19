@@ -6,7 +6,8 @@ from api.views import (CategoryViewSet,
                        TitleViewSet,
                        token_access,
                        send_confirmation_code,
-                       UserViewSet)
+                       UserViewSet
+                       )
 
 v1_router = routers.DefaultRouter()
 v1_router.register('users', UserViewSet)
