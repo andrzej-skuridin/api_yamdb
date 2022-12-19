@@ -78,18 +78,12 @@ class Title(models.Model):
                                null=True,
                                verbose_name='Год выпуска')
 
-    # TBA by another contributor (field type: ForeignKey)
-    # ---------------------------------------------------
     rating = models.SmallIntegerField(blank=True, null=True)
-    # ---------------------------------------------------
 
     description = models.CharField(max_length=200,
                                    verbose_name='Описание')
     genre = models.ManyToManyField(
         Genre,
-        # этот параметр похоже не предусмотрен
-        # null=True
-        #on_delete=models.SET_NULL,
         related_name='titles',
         verbose_name='Жанр',
     )
