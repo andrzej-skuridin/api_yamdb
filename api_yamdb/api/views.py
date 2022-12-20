@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import (filters,
                             mixins,
                             viewsets,
@@ -13,9 +14,12 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
+
 
 from .filters import TitleFilter
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly
+
 
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
@@ -24,9 +28,10 @@ from api.serializers import (CategorySerializer,
                              TitlePostPatchSerializer,
                              UserSerializer,
                              TokenAccessSerializer,
+                             ReviewSerializer
                              )
-
-from reviews.models import Category, Genre, GenreTitle, Title, User
+                            
+from reviews.models import Category, Genre, Title, Review, GenreTitle, User
 
 
 # Система подтверждения через e-mail
@@ -136,3 +141,24 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return TitleRetrieveSerializer
         return TitlePostPatchSerializer
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    permission_classes = [PermissionReviewComment]
+
+    def get_queryset(self):
+        title_id = self.kwargs.get("title_id")
+        new_queryset = Review.objects.filter(title=title_id)
+        return new_queryset
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get("title_id")
+        title = get_object_or_404(Title, id=title_id)
+        queryset = Review.objects.filter(
+            title=title_id,
+            author=self.request.user)
+        if len(queryset) > 0:
+            raise serializers.ValidationError(
+                'Нельзя два раза комментировать один пост!'
+            )
+        serializer.save(author=self.request.user, title=title)
