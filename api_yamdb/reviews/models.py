@@ -1,7 +1,10 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MaxLengthValidator, validate_slug
+from django.core.validators import (MaxLengthValidator,
+                                    validate_slug,
+                                    MaxValueValidator,
+                                    MinValueValidator)
 
 
 class User(AbstractUser):
@@ -126,3 +129,39 @@ class GenreTitle(models.Model):
                               db_column='title_id',
                               on_delete=models.CASCADE
                               )
+
+class Review(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews'
+    )
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='reviews'
+    )
+    text = models.TextField()
+    score = models.SmallIntegerField(
+        validators=[MaxValueValidator(10),
+                    MinValueValidator(1)])
+    pub_date = models.DateTimeField(
+        'Дата добавления', auto_now_add=True, db_index=True
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_title_author'
+            )
+        ]
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        'Дата добавления', auto_now_add=True, db_index=True
+    )

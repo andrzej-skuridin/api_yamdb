@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-
-from reviews.models import Category, Genre, Title, User
+import re
+from django.db.models import Avg
+from reviews.models import Category, Genre, Title, User, Review, Comment
 
 
 
@@ -52,16 +53,24 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, required=False)
     category = CategorySerializer(many=False, required=True)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = '__all__'
+
+    def get_rating(self, obj):
+        return obj.reviews.all().aggregate(Avg('score'))['score__avg']
 
 
 class TitleRetrieveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, required=False)
     category = CategorySerializer(many=False, required=True)
     pagination_class = None
+    rating = serializers.SerializerMethodField()
+
+    def get_rating(self, obj):
+        return obj.reviews.all().aggregate(Avg('score'))['score__avg']
 
     class Meta:
         model = Title
@@ -82,3 +91,28 @@ class TitlePostPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'author', 'title', 'text', 'score', 'pub_date')
+        read_only_fields = ('author', 'title', 'pub_date', 'id')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ('review', 'author', 'pub_date', 'id')
