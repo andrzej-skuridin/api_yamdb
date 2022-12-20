@@ -16,7 +16,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import TitleFilter
-from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly, PermissionReviewComment
+from .permissions import (IsAdminOrSuperUser,
+                          IsAdminOrSuperUserOrReadOnly,
+                          PermissionReviewComment
+                          )
 
 from api.serializers import (CategorySerializer,
                              GenreSerializer,
