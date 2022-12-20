@@ -1,7 +1,7 @@
 import re
 from django.db.models import Avg
 from rest_framework import serializers
-from reviews.models import Category, Genre, Title, Review
+from reviews.models import Category, Genre, Title, Review, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -98,3 +98,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'author', 'title', 'text', 'score', 'pub_date')
         read_only_fields = ('author', 'title', 'pub_date', 'id')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ('review', 'author', 'pub_date', 'id')

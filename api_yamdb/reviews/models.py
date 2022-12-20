@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxLengthValidator, validate_slug
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 class User(AbstractUser):
     USER = 'user'
     ADMIN = 'admin'
@@ -65,7 +66,7 @@ class Genre(models.Model):
                             )
 
     def __str__(self):
-        return self.name  # slug??
+        return self.name
 
 
 class Title(models.Model):
@@ -121,3 +122,16 @@ class Review(models.Model):
                 name='unique_title_author'
             )
         ]
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        'Дата добавления', auto_now_add=True, db_index=True
+    )

@@ -11,9 +11,10 @@ from api.serializers import (CategorySerializer,
                              GenreSerializer,
                              TitleSerializer,
                              UserSerializer,
-                             ReviewSerializer)
+                             ReviewSerializer,
+                             CommentSerializer)
 
-from reviews.models import Category, Genre, Title, Review
+from reviews.models import Category, Genre, Title, Review, Comment
 
 
 # Система подтверждения через e-mail
@@ -90,3 +91,18 @@ class ReviewViewSet(viewsets.ModelViewSet):
                 'Нельзя два раза писать отзыв на одно произведение!'
             )
         serializer.save(author=self.request.user, title=title)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [PermissionReviewComment]
+
+    def get_queryset(self):
+        review_id = self.kwargs.get("review_id")
+        new_queryset = Comment.objects.filter(review=review_id)
+        return new_queryset
+
+    def perform_create(self, serializer):
+        review_id = self.kwargs.get("review_id")
+        review = get_object_or_404(Review, id=review_id)
+        serializer.save(author=self.request.user, review=review)
