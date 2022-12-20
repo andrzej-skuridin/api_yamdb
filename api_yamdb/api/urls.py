@@ -4,12 +4,14 @@ from rest_framework import routers
 from api.views import (CategoryViewSet,
                        GenreViewSet,
                        TitleViewSet,
+                       UserViewSet,
                        token_access,
-                       send_confirmation_code,
-                       UserViewSet)
+                       send_confirmation_code)
 
 v1_router = routers.DefaultRouter()
-v1_router.register('users', UserViewSet)
+v1_router.register(prefix='users',
+                   basename='users',
+                   viewset=UserViewSet)
 v1_router.register(prefix='titles',
                    basename='title',
                    viewset=TitleViewSet)

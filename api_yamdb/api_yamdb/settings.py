@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -124,7 +125,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=14),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
@@ -132,7 +133,4 @@ AUTH_USER_MODEL = 'reviews.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-EMAIL_HOST_USER = 'example@example.ru'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+DEFAULT_FROM_EMAIL = 'example@example.ru'
