@@ -17,18 +17,15 @@ from api.serializers import (CategorySerializer,
 from reviews.models import Category, Genre, Title, Review, Comment
 
 
-# Система подтверждения через e-mail
 def send_confirmation_code(request):
     serializer = UserSerializer(data=request.data)
     pass
 
 
-# Работа с токеном
 def token_access(request):
     pass
 
 
-# Работа с юзерами
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pass
@@ -37,7 +34,6 @@ class UserViewSet(viewsets.ModelViewSet):
         pass
 
 
-# От этого вьюсета надо наследовать вьюсеты для категорий и жанров
 class ListAddDeleteViewSet(mixins.ListModelMixin,
                            mixins.DestroyModelMixin,
                            mixins.CreateModelMixin,
@@ -51,7 +47,6 @@ class CategoryViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
     pagination_class = PageNumberPagination
 
 
@@ -61,7 +56,6 @@ class GenreViewSet(ListAddDeleteViewSet):
     permission_classes = [IsAdminOrSuperUserOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # пагинация не проходит тест
     pagination_class = PageNumberPagination
 
 

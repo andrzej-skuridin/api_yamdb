@@ -1,8 +1,10 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MaxLengthValidator, validate_slug
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (MaxLengthValidator,
+                                    validate_slug,
+                                    MaxValueValidator,
+                                    MinValueValidator)
 
 
 class User(AbstractUser):
