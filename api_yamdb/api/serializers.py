@@ -28,7 +28,8 @@ class RegisterDataSerializer(serializers.Serializer):
             return data
         if (User.objects.filter(username=data['username']).exists()
                 or User.objects.filter(email=data['email']).exists()):
-            raise serializers.ValidationError('Почта или имя уже использовались')
+            raise serializers.ValidationError(
+                'Почта или имя уже использовались')
         return data
 
 

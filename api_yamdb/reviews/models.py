@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import (MaxLengthValidator,
                                     validate_slug,
                                     MaxValueValidator,
-                                    MinValueValidator)
+                                    MinValueValidator
+                                    )
 
 
 class User(AbstractUser):
