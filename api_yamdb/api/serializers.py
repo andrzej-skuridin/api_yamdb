@@ -5,6 +5,31 @@ from django.db.models import Avg
 from reviews.models import Category, Genre, Title, User, Review, Comment
 
 
+class RegisterDataSerializer(serializers.Serializer):
+    username = serializers.RegexField(
+        max_length=150,
+        required=True,
+        regex=r"^[\w.@+-]+\Z"
+    )
+    email = serializers.EmailField(
+        max_length=254,
+        required=True
+    )
+
+    def validate_username(self, username):
+        if username.lower() == "me":
+            raise serializers.ValidationError('Недопустимое имя пользователя')
+        return username
+
+    def validate(self, data):
+        if User.objects.filter(username=data['username'],
+                               email=data['email']).exists():
+            return data
+        if (User.objects.filter(username=data['username']).exists()
+                or User.objects.filter(email=data['email']).exists()):
+            raise serializers.ValidationError('Почта или имя уже использовались')
+        return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

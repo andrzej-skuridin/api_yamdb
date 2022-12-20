@@ -12,7 +12,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from .filters import TitleFilter
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly, PermissionReviewComment
@@ -25,7 +25,7 @@ from api.serializers import (CategorySerializer,
                              UserSerializer,
                              TokenAccessSerializer,
                              ReviewSerializer,
-                             CommentSerializer
+                             CommentSerializer, RegisterDataSerializer
                              )
 
 from reviews.models import Category, Genre, GenreTitle, Title, User, Review, Comment
@@ -35,22 +35,25 @@ from reviews.models import Category, Genre, GenreTitle, Title, User, Review, Com
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def send_confirmation_code(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = RegisterDataSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get('email')
-    username = serializer.validated_data.get('username')
-    serializer.save(email=email, username=username)
-    user = get_object_or_404(User, email=email, username=username)
-    confirmation_code = default_token_generator.make_token(user)
-    send_mail(
-        'Confirmation code for getting token',
-        f'Confirmation code: {confirmation_code}',
-        settings.EMAIL_HOST_USER,
-        [email],
-        fail_silently=False,
+
+    user, _ = User.objects.get_or_create(
+        username=serializer.data["username"],
+        email=serializer.data["email"]
     )
-    data = {'email': email, 'username': username}
-    return Response(data)
+
+    confirmation_code = default_token_generator.make_token(user)
+
+    send_mail(
+        subject="YaMDb registration",
+        message=f"Your confirmation code: {confirmation_code}",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False
+    )
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Работа с токеном
@@ -58,14 +61,17 @@ def send_confirmation_code(request):
 @permission_classes([AllowAny])
 def token_access(request):
     serializer = TokenAccessSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    username = serializer.validated_data.get('username')
-    confirmation_code = serializer.validated_data.get('confirmation_code')
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    username = serializer.data.get('username')
+    confirmation_code = serializer.data.get('confirmation_code')
     user = get_object_or_404(User, username=username)
+
     if default_token_generator.check_token(user, confirmation_code):
-        token = RefreshToken.for_user(user)
-        return Response({'token': str(token)})
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        token = AccessToken.for_user(user)
+        return Response({'token': str(token)}, status=status.HTTP_200_OK)
+
+    return Response({'confirmation_code': 'Неверный код подтверждения'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Работа с юзерами
@@ -75,13 +81,14 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrSuperUser,)
     lookup_field = 'username'
     filter_backends = (SearchFilter,)
-    search_fields = ('=username',)
+    search_fields = ('username',)
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         methods=["get", "patch"],
         detail=False,
         permission_classes=(IsAuthenticated,),
-    )
+        )
     def me(self, request):
         if request.method == "GET":
             serializer = UserSerializer(request.user)
