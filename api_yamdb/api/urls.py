@@ -1,4 +1,5 @@
 from django.urls import include, path
+
 from rest_framework import routers
 
 from api.views import (CategoryViewSet,
@@ -10,6 +11,7 @@ from api.views import (CategoryViewSet,
                        send_confirmation_code,
                        UserViewSet
                        )
+
 
 v1_router = routers.DefaultRouter()
 v1_router.register(prefix='users',

@@ -1,18 +1,19 @@
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (filters,
                             mixins,
                             viewsets,
-                            status, serializers)
+                            status,
+                            serializers
+                            )
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import TitleFilter
 from .permissions import IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly, PermissionReviewComment
@@ -25,10 +26,17 @@ from api.serializers import (CategorySerializer,
                              UserSerializer,
                              TokenAccessSerializer,
                              ReviewSerializer,
-                             CommentSerializer, RegisterDataSerializer
+                             CommentSerializer,
+                             RegisterDataSerializer
                              )
 
-from reviews.models import Category, Genre, GenreTitle, Title, User, Review, Comment
+from reviews.models import (Category,
+                            Comment,
+                            Genre,
+                            Review,
+                            Title,
+                            User
+                            )
 
 
 # Система подтверждения через e-mail
@@ -88,7 +96,7 @@ class UserViewSet(viewsets.ModelViewSet):
         methods=["get", "patch"],
         detail=False,
         permission_classes=(IsAuthenticated,),
-        )
+    )
     def me(self, request):
         if request.method == "GET":
             serializer = UserSerializer(request.user)
@@ -145,6 +153,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return TitleRetrieveSerializer
         return TitlePostPatchSerializer
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer

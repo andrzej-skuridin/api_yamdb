@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
-import re
 from django.db.models import Avg
+
+from rest_framework import serializers
+
 from reviews.models import Category, Genre, Title, User, Review, Comment
 
 
@@ -46,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         if value == 'me':
             raise ValidationError(
-                'Нельзя использовать зарезвированное имя "me".')
+                'Нельзя использовать зарезервированное имя "me".')
         return value
 
 
@@ -116,6 +117,7 @@ class TitlePostPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
