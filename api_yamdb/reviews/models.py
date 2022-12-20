@@ -90,13 +90,8 @@ class Title(models.Model):
     year = models.IntegerField(blank=True,
                                null=True,
                                verbose_name='Год выпуска')
-
-    # TBA by another contributor (field type: ForeignKey)
-    # ---------------------------------------------------
     rating = models.FloatField(blank=True,
                                null=True)
-    # ---------------------------------------------------
-
     description = models.CharField(max_length=200,
                                    verbose_name='Описание')
     genre = models.ManyToManyField(
@@ -130,6 +125,12 @@ class GenreTitle(models.Model):
                               on_delete=models.CASCADE
                               )
 
+    class Meta:
+        verbose_name = 'Жанр/Произведение'
+        verbose_name_plural = 'Жанры/Произведения'
+        ordering = ['-id']
+
+
 class Review(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews'
@@ -152,6 +153,9 @@ class Review(models.Model):
                 name='unique_title_author'
             )
         ]
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ['-id']
 
 
 class Comment(models.Model):
@@ -165,3 +169,8 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True
     )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ['-id']
