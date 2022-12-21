@@ -119,11 +119,15 @@ class Title(models.Model):
 class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre,
                               db_column='genre_id',
-                              on_delete=models.CASCADE
+                              on_delete=models.CASCADE,
+                              blank=True,
+                              null=True,
                               )
     title = models.ForeignKey(Title,
                               db_column='title_id',
-                              on_delete=models.CASCADE
+                              on_delete=models.CASCADE,
+                              blank=True,
+                              null=True,
                               )
 
     class Meta:
