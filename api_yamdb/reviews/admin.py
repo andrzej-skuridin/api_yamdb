@@ -42,12 +42,14 @@ class TitleAdmin(ImportExportModelAdmin):
 
 
 class GenreTitleResource(resources.ModelResource):
-    title = Field(attribute='title',
-                     column_name='title_id',
-                     widget=widgets.ForeignKeyWidget)
-    genre = Field(attribute='genre',
-                     column_name='genre_id',
-                     widget=widgets.ForeignKeyWidget)
+    title = Field(
+        attribute='title',
+        column_name='title_id',
+        widget=widgets.ForeignKeyWidget)
+    genre = Field(
+        attribute='genre',
+        column_name='genre_id',
+        widget=widgets.ForeignKeyWidget)
 
     class Meta:
         model = GenreTitle
@@ -87,12 +89,15 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class CommentResource(resources.ModelResource):
-    review = Field(attribute='review',
-                  column_name='review_id',
-                  widget=widgets.ForeignKeyWidget)
-    author = Field(attribute='author',
-                   column_name='author',
-                   widget=widgets.ForeignKeyWidget)
+    review = Field(
+        attribute='review',
+        column_name='review_id',
+        widget=widgets.ForeignKeyWidget)
+    author = Field(
+        attribute='author',
+        column_name='author',
+        widget=widgets.ForeignKeyWidget)
+
     class Meta:
         model = Category
         fields = ('id', 'text', 'pub_date', 'review_id', 'author')
