@@ -143,8 +143,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         exclude = ('review',)
-        # fields = '__all__'
-        read_only_fields = (#'review',
-                            'author',
+        read_only_fields = ('author',
                             'pub_date',
-                            'id')
+                            'id'
+                            )
