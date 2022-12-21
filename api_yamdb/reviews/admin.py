@@ -1,8 +1,9 @@
 from django.contrib import admin
-from import_export import resources
+from import_export import resources, widgets
 from import_export.admin import ImportExportModelAdmin
+from import_export.fields import Field
 
-from .models import Category, Genre, GenreTitle, Title, User
+from .models import Category, Comment, Genre, GenreTitle, Review, Title, User
 
 
 class GenreResource(resources.ModelResource):
@@ -41,6 +42,13 @@ class TitleAdmin(ImportExportModelAdmin):
 
 
 class GenreTitleResource(resources.ModelResource):
+    title = Field(attribute='title',
+                     column_name='title_id',
+                     widget=widgets.ForeignKeyWidget)
+    genre = Field(attribute='genre',
+                     column_name='genre_id',
+                     widget=widgets.ForeignKeyWidget)
+
     class Meta:
         model = GenreTitle
         fields = ('id',
@@ -76,6 +84,36 @@ class UserAdmin(admin.ModelAdmin):
     )
     list_filter = ("role",)
     empty_value_display = "-пусто-"
+
+
+class CommentResource(resources.ModelResource):
+    review = Field(attribute='review',
+                  column_name='review_id',
+                  widget=widgets.ForeignKeyWidget)
+    author = Field(attribute='author',
+                   column_name='author',
+                   widget=widgets.ForeignKeyWidget)
+    class Meta:
+        model = Category
+        fields = ('id', 'text', 'pub_date', 'review_id', 'author')
+
+
+@admin.register(Comment)
+class CommentAdmin(ImportExportModelAdmin):
+    resource_classes = (CommentResource,)
+    list_display = ('text', 'pub_date', 'review_id', 'author')
+
+
+class ReviewResource(resources.ModelResource):
+    class Meta:
+        model = Category
+        fields = ('id', 'text', 'pub_date', 'title_id', 'author', 'score')
+
+
+@admin.register(Review)
+class CommentAdmin(ImportExportModelAdmin):
+    resource_classes = (ReviewResource,)
+    list_display = ('text', 'pub_date', 'title_id', 'author', 'score')
 
 
 admin.site.register(User, UserAdmin)
