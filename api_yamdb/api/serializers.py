@@ -1,26 +1,22 @@
-from django.core.exceptions import ValidationError
 from django.db.models import Avg
 
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title, User, Review, Comment
+from reviews.validators import validate_username
 
 
 class RegisterDataSerializer(serializers.Serializer):
     username = serializers.RegexField(
         max_length=150,
         required=True,
-        regex=r"^[\w.@+-]+\Z"
+        regex=r"^[\w.@+-]+\Z",
+        validators=[validate_username]
     )
     email = serializers.EmailField(
         max_length=254,
         required=True
     )
-
-    def validate_username(self, username):
-        if username.lower() == "me":
-            raise serializers.ValidationError('Недопустимое имя пользователя')
-        return username
 
     def validate(self, data):
         if User.objects.filter(username=data['username'],
@@ -34,6 +30,8 @@ class RegisterDataSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    default_validators = [validate_username]
+
     class Meta:
         fields = (
             'username',
@@ -44,12 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
             'role',
         )
         model = User
-
-    def validate_username(self, value):
-        if value == 'me':
-            raise ValidationError(
-                'Нельзя использовать зарезервированное имя "me".')
-        return value
 
 
 class TokenAccessSerializer(serializers.Serializer):

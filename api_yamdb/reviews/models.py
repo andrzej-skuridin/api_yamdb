@@ -9,13 +9,10 @@ from django.core.validators import (MaxLengthValidator,
 
 
 class User(AbstractUser):
-    USER = 'user'
-    ADMIN = 'admin'
-    MODERATOR = 'moderator'
     ROLE_CHOICES = [
-        (USER, 'user'),
-        (ADMIN, 'admin'),
-        (MODERATOR, 'moderator'),
+        ('user', 'user'),
+        ('admin', 'admin'),
+        ('moderator', 'moderator'),
     ]
 
     email = models.EmailField(max_length=254, unique=True)
@@ -25,17 +22,11 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    role = models.CharField(max_length=9, choices=ROLE_CHOICES, default=USER)
+    role = models.CharField(max_length=9, choices=ROLE_CHOICES, default='user')
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-
-    def save(self, *args, **kwargs):
-        self.is_active = True
-        if self.role == self.ADMIN:
-            self.is_staff = True
-        super(User, self).save(*args, **kwargs)
 
 
 class Category(models.Model):
