@@ -1,13 +1,10 @@
-from rest_framework.exceptions import PermissionDenied
 from rest_framework import permissions
-
-from reviews.models import User
 
 
 class IsAdminOrSuperUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return (request.user.is_authenticated
-                and (request.user.role == User.ADMIN
+                and (request.user.role == 'admin'
                      or request.user.is_superuser))
 
 
@@ -15,7 +12,7 @@ class IsAdminOrSuperUserOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or (request.user.is_authenticated
-                    and (request.user.role == User.ADMIN
+                    and (request.user.role == 'admin'
                          or request.user.is_superuser)))
 
 
@@ -29,15 +26,5 @@ class PermissionReviewComment(permissions.BasePermission):
                 or (request.user.is_authenticated
                     and (request.method == 'POST'
                          or request.user.is_superuser
-                         or request.user.role != User.USER
+                         or request.user.role != 'user'
                          or obj.author == request.user)))
-
-
-# лучше использовать IsAdminOrSuperUserOrReadOnly (см. выше)
-class AdminOrReadOnly(permissions.BasePermission):
-
-    def has_permission(self, request, view):
-        if request.user.role == 'admin' or (
-                request.method in permissions.SAFE_METHODS):
-            return True
-        raise PermissionDenied('Нет прав доступа')
