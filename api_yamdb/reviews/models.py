@@ -67,7 +67,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-        ordering = ['-id']
+        ordering = ('-id',)
 
     def __str__(self):
         return f'{self.name}'
@@ -101,7 +101,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
-        ordering = ['-id']
+        ordering = ('-id',)
 
     def __str__(self):
         return f'{self.name}'
@@ -124,7 +124,7 @@ class GenreTitle(models.Model):
     class Meta:
         verbose_name = 'Жанр/Произведение'
         verbose_name_plural = 'Жанры/Произведения'
-        ordering = ['-id']
+        ordering = ('-id',)
 
 
 class Review(models.Model):
@@ -151,7 +151,7 @@ class Review(models.Model):
         ]
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ['-id']
+        ordering = ('-id',)
 
 
 class Comment(models.Model):
@@ -169,4 +169,4 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['-id']
+        ordering = ('-id',)
