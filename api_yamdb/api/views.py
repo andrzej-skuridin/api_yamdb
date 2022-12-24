@@ -61,8 +61,9 @@ def send_confirmation_code(request):
         message=f"Your confirmation code: {confirmation_code}",
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
-        fail_silently=False
+        fail_silently=True
     )
+    print(confirmation_code)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
